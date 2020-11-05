@@ -1,0 +1,25 @@
+version: '3.2'
+
+services:
+
+  db:
+    image: mysql:5.7
+    container_name: mysql-db
+    restart: always
+    env_file: .env
+    volumes:
+      - ./mysql/init:/docker-entrypoint-initdb.d:ro
+      - ./mysql/data:/var/lib/mysql
+
+  web:
+    build: .
+    container_name: web
+    env_file: .env
+    restart: always
+    depends_on:
+      - db
+    command: sh -c "/wait && ./run.sh web"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/paymob_task/

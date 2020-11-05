@@ -1,0 +1,368 @@
+openapi: 3.0.2
+servers:
+- url: /api/v1
+  description: example
+info:
+  title: 'Promo System API Documentation'
+  version: 1.0
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []  
+paths:
+  /login/:
+    post:
+      operationId: CreateTokenObtainPair
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - username
+              - password
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                  writeOnly: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                required:
+                - access
+                properties:
+                  access:
+                    type: string
+  /users/:
+    get:
+      operationId: ListUsers
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  role:
+                    type: string
+                    enum:
+                    - ADMIN
+                    - NORMAL
+                  username:
+                    type: string
+                  phone_number:
+                    type: string
+    post:
+      operationId: createUser
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - username
+              - password
+              - role
+              properties:
+                role:
+                  type: string
+                  enum:
+                  - ADMIN
+                  - NORMAL
+                username:
+                  type: string
+                password:
+                  type: string
+                phone_number:
+                    type: string
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  role:
+                    type: string
+                    enum:
+                    - ADMIN
+                    - NORMAL
+                  username:
+                    type: string
+                  phone_number:
+                    type: string
+  /promos/:
+    get:
+      operationId: ListPromos
+      parameters: []
+      description: Allows admin/normal user to retrieve a list of all promos that exist
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  user:
+                    type: integer
+                  promo_type:
+                    type: string
+                    maxLength: 50
+                  promo_code:
+                    type: string
+                    maxLength: 40
+                    readOnly: true
+                  id:
+                    type: integer
+                    readOnly: true
+                  promo_amount:
+                    type: integer
+                  is_active:
+                    type: boolean
+                  description:
+                    type: string
+                  created:
+                    type: string
+                    readOnly: true
+                    format: date-time
+                  modified:
+                    type: string
+                    readOnly: true
+                    format: date-time
+                  start_time:
+                    type: string
+                    format: date-time
+                    description: Creation date and time
+                    example: "2021-01-30T08:30:00Z"
+                  end_time:
+                    type: string
+                    format: date-time
+                    description: Creation date and time
+                    example: "2021-01-30T08:30:00Z"
+    post:
+      operationId: createPromo
+      parameters: []
+      description: Allows admin user to create a promo to a normal user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - user
+              - promo_amount
+              - start_time
+              - end_time
+              properties:
+                user:
+                  type: integer
+                  description: Normal user id that related to this promo code
+                promo_type:
+                  type: string
+                  maxLength: 50
+                promo_amount:
+                  type: integer
+                is_active:
+                  type: boolean
+                description:
+                  type: string
+                start_time:
+                  type: string
+                  format: date-time
+                  description: Creation date and time
+                  example: "2021-01-30T08:30:00Z"
+                end_time:
+                  type: string
+                  format: date-time
+                  description: Creation date and time
+                  example: "2021-01-30T08:30:00Z"
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  user:
+                    type: integer
+                  promo_type:
+                    type: string
+                    maxLength: 50
+                  promo_code:
+                    type: string
+                    maxLength: 40
+                    readOnly: true
+                  id:
+                    type: integer
+                    readOnly: true
+                  promo_amount:
+                    type: integer
+                  is_active:
+                    type: boolean
+                  description:
+                    type: string
+                  created:
+                    type: string
+                    readOnly: true
+                    format: date-time
+                  modified:
+                    type: string
+                    readOnly: true
+                    format: date-time
+                  start_time:
+                    type: string
+                    format: date-time
+                  end_time:
+                    type: string
+                    format: date-time
+
+  /promos/{id}/:
+    patch:
+      operationId: modifyPromo
+      description: Allows admin user to modify a promo that already exists
+      parameters: 
+        - name: id
+          in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                user:
+                  type: integer
+                  description: Normal user id that related to this promo code
+                promo_type:
+                  type: string
+                  maxLength: 50
+                promo_amount:
+                  type: integer
+                is_active:
+                  type: boolean
+                description:
+                  type: string
+                start_time:
+                  type: string
+                  format: date-time
+                  description: Creation date and time
+                  example: "2021-01-30T08:30:00Z"
+                end_time:
+                  type: string
+                  format: date-time
+                  description: Creation date and time
+                  example: "2021-01-30T08:30:00Z"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  user:
+                    type: integer
+                  promo_type:
+                    type: string
+                    maxLength: 50
+                  promo_code:
+                    type: string
+                    maxLength: 40
+                    readOnly: true
+                  id:
+                    type: integer
+                    readOnly: true
+                  promo_amount:
+                    type: integer
+                  is_active:
+                    type: boolean
+                  description:
+                    type: string
+                  created:
+                    type: string
+                    readOnly: true
+                    format: date-time
+                  modified:
+                    type: string
+                    readOnly: true
+                    format: date-time
+                  start_time:
+                    type: string
+                    format: date-time
+                  end_time:
+                    type: string
+                    format: date-time
+    delete:
+      operationId: deletePromo
+      parameters: 
+        - name: id
+          in: path
+      responses:
+        '204': []
+
+  /points/get_points/{id}/:
+    get:
+      operationId: getPromoPoints
+      description: Allows normal user to get the remaining points from a particular promo
+      parameters: 
+        - name: id
+          in: path
+          description: promo object id
+      responses:
+        '200': 
+          content:
+            application/json:
+              schema:
+                properties:
+                  remaining_points:
+                    type: string
+                  active:
+                    type: boolean
+                  promo_code:
+                    type: string
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+
+  /points/use_promo/:
+    post:
+      operationId: usePromo
+      description: Allows normal users to deduct some of the points from one of their promos
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - amount
+              properties:
+                promo_code:
+                  type: string
+                  maxLength: 40
+                amount:
+                  type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: string
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
